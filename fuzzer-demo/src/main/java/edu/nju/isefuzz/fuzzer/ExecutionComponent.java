@@ -19,12 +19,13 @@ public class ExecutionComponent {
      * @throws IOException if the executor starts wrongly.
      */
     // Executes the fuzz target and returns the result
-    public ExecutionResult execute(String cp, String tn, String ti) throws IOException, InterruptedException {
+    public ExecutionResult execute(String cp, String tn, String ti,int shmId) throws IOException, InterruptedException {
         // Construct the executor
         ProcessBuilder pb = new ProcessBuilder("java", "-cp", cp, tn, ti);
 
         // Redirect execution result to here and execute.
         pb.redirectErrorStream(true);
+        pb.environment().put("__AFL_SHM_ID", String.valueOf(shmId));
         Process p = pb.start();
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
 

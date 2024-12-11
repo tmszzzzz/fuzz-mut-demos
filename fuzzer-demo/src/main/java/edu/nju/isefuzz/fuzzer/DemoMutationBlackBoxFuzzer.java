@@ -26,19 +26,20 @@ public class DemoMutationBlackBoxFuzzer {
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
         EvaluationComponent evaluationComponent = new EvaluationComponent(new ArrayList<>(), new HashSet<>());
-
+        SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare();
         Set<ExecutionResult> observedRes = new HashSet<>();
 
         // Fuzzing loop
         int fuzzRnd = 0;
         boolean findCrash = false;
+        sharedMemoryManager.createSharedMemory(65536);
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
             Set<String> testInputs = mutationComponent.generate(nextSeed);
 
             for (String ti : testInputs) {
-                ExecutionResult execRes = execComponent.execute(cp, tn, ti);
+                ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId());
                 monitorComponent.monitorExecution(execRes, nextSeed);
 
                 if (execRes.isCrash()) {
@@ -66,5 +67,6 @@ public class DemoMutationBlackBoxFuzzer {
 
         // Postprocess the seeds
         postprocess(outDir, seedQueue);
+        sharedMemoryManager.destroySharedMemory();
     }
 }
