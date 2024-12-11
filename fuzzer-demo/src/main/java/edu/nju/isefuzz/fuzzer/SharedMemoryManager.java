@@ -12,6 +12,7 @@ public class SharedMemoryManager {
         int shmdt(Pointer shmaddr);
         int shmctl(int shmid, int cmd, Pointer buf);
     }
+    private static final int BITMAP_SIZE = 65536;
     private static final int KEY = 1145;
     private static final int IPC_CREAT = 01000; // 创建共享内存标志
     private static final int IPC_RMID = 0;     // 删除共享内存标志
@@ -20,7 +21,6 @@ public class SharedMemoryManager {
     private Pointer shmPtr;
 
     public void createSharedMemory(int size) {
-        // 使用随机 key 创建共享内存
         shmId = LibC.INSTANCE.shmget(KEY, size, 0666 | IPC_CREAT);
         if (shmId < 0) {
             throw new RuntimeException("Failed to create shared memory");
@@ -33,6 +33,14 @@ public class SharedMemoryManager {
         }
 
         System.out.println("Shared memory created with ID: " + shmId);
+    }
+
+    public byte[] readCoverageBitmap() {
+        if (shmPtr == null) {
+            throw new IllegalStateException("Shared memory is not attached.");
+        }
+        // 从共享内存读取位图
+        return shmPtr.getByteArray(0, BITMAP_SIZE);
     }
 
     public int getShmId() {
