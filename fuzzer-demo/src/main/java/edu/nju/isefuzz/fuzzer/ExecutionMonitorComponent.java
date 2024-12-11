@@ -10,7 +10,7 @@ public class ExecutionMonitorComponent {
     // Monitors execution results
     public void monitorExecution(ExecutionResult execRes, Seed seed) {
         // Log the execution result
-        System.out.println("[MONITOR] " + execRes.getInfo());
+        System.out.println("[MONITOR] " + execRes.getInfo() + " CoverageRate: " + execRes.getCoverageRate());
 
         // Check if a crash was found
         if (execRes.isCrash()) {

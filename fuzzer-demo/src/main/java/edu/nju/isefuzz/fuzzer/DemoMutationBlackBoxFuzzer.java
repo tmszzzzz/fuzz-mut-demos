@@ -39,7 +39,7 @@ public class DemoMutationBlackBoxFuzzer {
             Set<String> testInputs = mutationComponent.generate(nextSeed);
 
             for (String ti : testInputs) {
-                ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId());
+                ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(),sharedMemoryManager);
                 monitorComponent.monitorExecution(execRes, nextSeed);
 
                 if (execRes.isCrash()) {

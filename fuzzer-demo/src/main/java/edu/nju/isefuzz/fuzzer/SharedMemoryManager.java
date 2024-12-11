@@ -43,6 +43,17 @@ public class SharedMemoryManager {
         return shmPtr.getByteArray(0, BITMAP_SIZE);
     }
 
+    public int getCoverageRate() {
+        byte[] coverageBitmap = readCoverageBitmap();
+        int totalCovered = 0;
+        for (byte b : coverageBitmap) {
+            if (b != 0) {
+                totalCovered++;
+            }
+        }
+        return totalCovered;
+    }
+
     public int getShmId() {
         return shmId;
     }
