@@ -12,7 +12,7 @@ public class SharedMemoryManager {
         int shmdt(Pointer shmaddr);
         int shmctl(int shmid, int cmd, Pointer buf);
     }
-
+    private static final int KEY = 1145;
     private static final int IPC_CREAT = 01000; // 创建共享内存标志
     private static final int IPC_RMID = 0;     // 删除共享内存标志
 
@@ -21,7 +21,7 @@ public class SharedMemoryManager {
 
     public void createSharedMemory(int size) {
         // 使用随机 key 创建共享内存
-        shmId = LibC.INSTANCE.shmget(IPC_CREAT, size, 0666);
+        shmId = LibC.INSTANCE.shmget(KEY, size, 0666 | IPC_CREAT);
         if (shmId < 0) {
             throw new RuntimeException("Failed to create shared memory");
         }
