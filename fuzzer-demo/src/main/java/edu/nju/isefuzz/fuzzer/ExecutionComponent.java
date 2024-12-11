@@ -19,7 +19,7 @@ public class ExecutionComponent {
      * @throws IOException if the executor starts wrongly.
      */
     // Executes the fuzz target and returns the result
-    public ExecutionResult execute(String cp, String tn, String ti,int shmId) throws IOException, InterruptedException {
+    public ExecutionResult execute(String cp, String tn, String ti,int shmId,SharedMemoryManager shmManager) throws IOException, InterruptedException {
         // Construct the executor
         ProcessBuilder pb = new ProcessBuilder("java", "-cp", cp, tn, ti);
 
@@ -40,6 +40,6 @@ public class ExecutionComponent {
         }
 
         // Wrap and return execution result
-        return new ExecutionResult(infoBuilder.toString(), p.exitValue());
+        return new ExecutionResult(infoBuilder.toString(), p.exitValue(), shmManager.getCoverageRate());
     }
 }

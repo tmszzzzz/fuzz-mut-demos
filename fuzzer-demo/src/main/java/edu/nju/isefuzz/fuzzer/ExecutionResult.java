@@ -6,9 +6,12 @@ public class ExecutionResult {
     private String info;
     private int exitVal;
 
-    public ExecutionResult(String info, int exitVal) {
+    private int coverageRate;
+
+    public ExecutionResult(String info, int exitVal,int coverageRate) {
         this.info = info;
         this.exitVal = exitVal;
+        this.coverageRate = coverageRate;
     }
 
     public String getInfo() {
@@ -21,6 +24,9 @@ public class ExecutionResult {
 
     public boolean isCrash() {
         return exitVal != 0;
+    }
+    public int getCoverageRate() {
+        return coverageRate;
     }
 
     @Override
