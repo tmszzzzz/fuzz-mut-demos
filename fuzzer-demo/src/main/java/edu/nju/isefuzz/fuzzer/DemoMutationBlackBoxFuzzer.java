@@ -70,6 +70,10 @@ public class DemoMutationBlackBoxFuzzer {
             // Seed retirement logic
             if (seedQueue.size() > 500 || findCrash) {
                 shrinkQueue(seedQueue);
+                if(seedQueue.isEmpty()) {
+                    System.out.println("SeedQueue is empty. Reset to original seed.");
+                    seedQueue = prepare();
+                }
             }
 
             // Evaluation logic
