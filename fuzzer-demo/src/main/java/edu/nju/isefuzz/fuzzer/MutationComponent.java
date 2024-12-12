@@ -97,7 +97,7 @@ public class MutationComponent {
      * @param otherSeeds other seed contents for splicing
      * @return a set of offspring test inputs.
      */
-    public Set<String> fuzzOne(Seed seed, Set<String> otherSeeds) {
+    public Set<String> fuzzOne(Seed seed, Set<Seed> otherSeeds) {
         String sCont = seed.getContent();
         Set<String> mutatedInputs = new HashSet<>();
         int mutations = random.nextInt(5) + 1; // 执行 1-5 次变异
@@ -111,11 +111,11 @@ public class MutationComponent {
                 case 3 -> mutatedInputs.add(havoc(sCont));
                 case 4 -> {
                     if (!otherSeeds.isEmpty()) {
-                        String other = otherSeeds.stream()
+                        Seed other = otherSeeds.stream()
                                 .skip(random.nextInt(otherSeeds.size()))
                                 .findFirst()
-                                .orElse(sCont);
-                        mutatedInputs.add(splice(sCont, other));
+                                .orElse(seed);
+                        mutatedInputs.add(splice(sCont, other.getContent()));
                     }
                 }
             }

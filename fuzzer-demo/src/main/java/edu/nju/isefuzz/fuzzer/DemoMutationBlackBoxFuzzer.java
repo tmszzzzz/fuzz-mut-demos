@@ -36,7 +36,7 @@ public class DemoMutationBlackBoxFuzzer {
         sharedMemoryManager.createSharedMemory(65536);
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
-            Set<String> testInputs = mutationComponent.generate(nextSeed);
+            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue));
 
             for (String ti : testInputs) {
                 Seed newseed = new Seed(ti,false);
@@ -53,9 +53,9 @@ public class DemoMutationBlackBoxFuzzer {
                     observedRes.add(execRes);
                     newseed.markFavored();
                 }
-
                 seedQueue.add(newseed);
             }
+            seedQueue.remove(nextSeed);
 
             // Seed retirement logic
             if (seedQueue.size() > 500 || findCrash) {

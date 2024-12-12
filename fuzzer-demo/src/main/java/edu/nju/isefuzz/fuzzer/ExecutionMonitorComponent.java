@@ -10,20 +10,21 @@ public class ExecutionMonitorComponent {
     // Monitors execution results
     public void monitorExecution(ExecutionResult execRes, Seed seed, String ti) {
         // Log the execution result
-        System.out.printf("\n[MONITOR] Monitoring Execution...\n[MONITOR] Execution Info:\n" + execRes.getInfo() + "\n[MONITOR] Coverage: " + execRes.getCoverageRate() +
-                "\n[MONITOR] Seed: `%s`\n" +
-                "[MONITOR] Test Input: `%s`\n", seed,ti);
+        System.out.printf("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n" + execRes.getInfo()+ "\n----------" + "\nCoverage: " + execRes.getCoverageRate() +
+                "\nSeed: `%s`\n" +
+                "Test Input: `%s`\n", seed,ti);
 
         // Check if a crash was found
         if (execRes.isCrash()) {
-            System.out.printf("[MONITOR] Crash detected in this input!\n");
+            System.out.printf("Crash detected in this input!\n");
         }
 
         // Track new results
         if (!observedResults.contains(execRes)) {
             observedResults.add(execRes);
-            System.out.printf("[MONITOR] New result found in this input!\n");
+            System.out.printf("New result found in this input!\n");
         }
+        System.out.println("[MONITOR] END.\n" );
     }
 
     public Set<ExecutionResult> getObservedResults() {
