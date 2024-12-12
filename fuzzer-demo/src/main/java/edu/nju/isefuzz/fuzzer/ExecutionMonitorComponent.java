@@ -8,11 +8,12 @@ public class ExecutionMonitorComponent {
     private final Set<ExecutionResult> observedResults = new HashSet<>();
 
     // Monitors execution results
-    public void monitorExecution(ExecutionResult execRes, Seed seed, String ti) {
+    public void monitorExecution(ExecutionResult execRes, Seed seed, String ti, int seedEnergy) {
         // Log the execution result
         System.out.printf("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n" + execRes.getInfo()+ "\n----------" + "\nCoverage: " + execRes.getCoverageRate() +
                 "\nSeed: `%s`\n" +
-                "Test Input: `%s`\n", seed,ti);
+                "Seed Energy: `%d`\n" +
+                "Test Input: `%s`\n", seed,seedEnergy,ti);
 
         // Check if a crash was found
         if (execRes.isCrash()) {

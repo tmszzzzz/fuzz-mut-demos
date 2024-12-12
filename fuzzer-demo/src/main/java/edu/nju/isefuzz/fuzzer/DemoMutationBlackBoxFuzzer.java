@@ -34,15 +34,20 @@ public class DemoMutationBlackBoxFuzzer {
         int fuzzRnd = 0;
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
+        int lastSeedCoverage = 0;
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
-            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energySchedulingComponent.getMutationPower(nextSeed));
+            int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
+            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
             for (String ti : testInputs) {
                 Seed newseed = new Seed(ti,false);
 
                 ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(),sharedMemoryManager);
-                monitorComponent.monitorExecution(execRes, nextSeed,ti);
+                monitorComponent.monitorExecution(execRes, nextSeed,ti,energy);
+
+                lastSeedCoverage = sharedMemoryManager.getCoverageRate();
+                newseed.setCoverageRate(lastSeedCoverage);
 
                 if (execRes.isCrash()) {
                     findCrash = true;
