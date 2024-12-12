@@ -62,7 +62,7 @@ public class DemoMutationBlackBoxFuzzer {
                     }
                     seedQueue.add(newseed);
                 }catch (IOException e){
-                    System.out.println(ti);
+                    System.out.println("Invalid input with '\\0'.");
                 }
             }
             seedQueue.remove(nextSeed);
