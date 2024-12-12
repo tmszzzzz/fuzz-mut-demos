@@ -39,19 +39,22 @@ public class DemoMutationBlackBoxFuzzer {
             Set<String> testInputs = mutationComponent.generate(nextSeed);
 
             for (String ti : testInputs) {
+                Seed newseed = new Seed(ti,false);
+
                 ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(),sharedMemoryManager);
                 monitorComponent.monitorExecution(execRes, nextSeed);
 
                 if (execRes.isCrash()) {
                     findCrash = true;
-                    nextSeed.markCrashed();
+                    newseed.markCrashed();
                 }
 
                 if (!observedRes.contains(execRes)) {
                     observedRes.add(execRes);
-                    nextSeed.markFavored();
+                    newseed.markFavored();
                 }
-                seedQueue.add(nextSeed);
+
+                seedQueue.add(newseed);
             }
 
             // Seed retirement logic
