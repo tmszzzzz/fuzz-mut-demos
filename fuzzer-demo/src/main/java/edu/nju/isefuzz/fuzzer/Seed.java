@@ -4,11 +4,13 @@ public class Seed {
     private String content;
     private boolean isFavored;
     private boolean isCrash;
+    private int Coverage_rate;
 
     public Seed(String content, boolean isFavored) {
         this.content = content;
         this.isFavored = isFavored;
         this.isCrash = false;
+        this.Coverage_rate = 0;
     }
 
     public Seed(String content) {
@@ -27,6 +29,10 @@ public class Seed {
         return content;
     }
 
+    public int getCoverageRate() {
+        return Coverage_rate;
+    }
+
     public boolean isFavored() {
         return isFavored;
     }
@@ -35,6 +41,7 @@ public class Seed {
         return isCrash;
     }
 
+    public void setCoverageRate(int Coverage_rate) { this.Coverage_rate = Coverage_rate;}
     @Override
     public boolean equals(Object that) {
         if (that instanceof Seed)

@@ -11,9 +11,8 @@ public class SeedSchedulingComponent {
         Seed nextSeed = seeds.get(round % seeds.size());
 
         for (Seed seed : seeds) {
-            if (!observedResults.contains(seed)) {
-                nextSeed = seed; // Prefer seeds that yield new execution results
-                break;
+            if(seed.getCoverageRate() > nextSeed.getCoverageRate()){
+                nextSeed = seed;
             }
         }
 
