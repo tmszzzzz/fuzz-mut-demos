@@ -7,19 +7,25 @@ public class EnergySchedulingComponent {
 
     // Determines how many mutations to apply based on the seed's "favor" status
     public int getMutationPower(Seed seed) {
-        int basePower = 5;
-        return seed.isFavored() ? basePower * 10 : basePower;
-    }
+        double coverageFactor = seed.getCoverageRate() / 65536.0; // 覆盖率比例
+        int energy = 3;
 
-    // Adjusts mutation power dynamically based on execution feedback (e.g., performance metrics)
-    public int adjustMutationPower(Seed seed, long executionTime) {
-        int mutationPower = getMutationPower(seed);
+        // 基于覆盖率调整能量（覆盖率越高，变异次数越多）
+        energy += (int) (coverageFactor * 7); // 覆盖率最多增加 7 次变异
 
-        // Example of adjusting based on execution time: more time-consuming mutations may get higher priority
-        if (executionTime > 1000) {
-            mutationPower += 5; // Increase mutation strength for seeds with longer execution time
+        // 如果是崩溃种子，增加额外变异次数
+        if (seed.isCrash()) {
+            energy += 3; // 崩溃种子额外增加 3 次变异
         }
 
-        return mutationPower;
+        // 如果是 favored 种子，增加额外变异次数
+        if (seed.isFavored()) {
+            energy += 2; // favored 种子额外增加 2 次变异
+        }
+
+        // 限制最大变异次数，防止过高
+        energy = Math.max(1, Math.min(energy, 15)); // 限制变异次数在 1 到 15 次之间
+
+        return energy;
     }
 }

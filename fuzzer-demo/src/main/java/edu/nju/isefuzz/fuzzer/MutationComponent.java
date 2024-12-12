@@ -97,10 +97,10 @@ public class MutationComponent {
      * @param otherSeeds other seed contents for splicing
      * @return a set of offspring test inputs.
      */
-    public Set<String> fuzzOne(Seed seed, Set<Seed> otherSeeds) {
+    public Set<String> fuzzOne(Seed seed, Set<Seed> otherSeeds, int energy) {
         String sCont = seed.getContent();
         Set<String> mutatedInputs = new HashSet<>();
-        int mutations = random.nextInt(5) + 1; // 执行 1-5 次变异
+        int mutations = energy;
 
         for (int i = 0; i < mutations; i++) {
             int choice = random.nextInt(5); // 随机选择一个变异算子

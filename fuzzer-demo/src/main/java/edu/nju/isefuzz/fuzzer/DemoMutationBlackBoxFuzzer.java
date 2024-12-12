@@ -36,7 +36,7 @@ public class DemoMutationBlackBoxFuzzer {
         sharedMemoryManager.createSharedMemory(65536);
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
-            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue));
+            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energySchedulingComponent.getMutationPower(nextSeed));
 
             for (String ti : testInputs) {
                 Seed newseed = new Seed(ti,false);
