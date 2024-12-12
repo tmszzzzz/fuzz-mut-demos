@@ -11,7 +11,7 @@ public class ExecutionMonitorComponent {
     public void monitorExecution(ExecutionResult execRes, Seed seed, String ti) {
         // Log the execution result
         System.out.printf("\n[MONITOR] Monitoring Execution...\n[MONITOR] Execution Info:\n" + execRes.getInfo() + "\n[MONITOR] Coverage: " + execRes.getCoverageRate() +
-                "[MONITOR] Seed: `%s`\n" +
+                "\n[MONITOR] Seed: `%s`\n" +
                 "[MONITOR] Test Input: `%s`\n", seed,ti);
 
         // Check if a crash was found
