@@ -29,6 +29,7 @@ public class EvaluationComponent {
 
         newResults = observedResults.size();
 
+
         System.out.printf("[EVALUATION] Favored Seeds: %d\n", favoredSeeds);
         System.out.printf("[EVALUATION] Crashed Seeds: %d\n", crashSeeds);
         System.out.printf("[EVALUATION] Unique Results: %d\n", newResults);
