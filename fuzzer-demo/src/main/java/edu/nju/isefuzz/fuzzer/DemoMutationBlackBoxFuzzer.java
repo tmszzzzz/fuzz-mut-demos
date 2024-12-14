@@ -1,6 +1,7 @@
 package edu.nju.isefuzz.fuzzer;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,30 +42,38 @@ public class DemoMutationBlackBoxFuzzer {
             Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
             for (String ti : testInputs) {
-                Seed newseed = new Seed(ti,false);
+                try {
+                    Seed newseed = new Seed(ti, false);
 
-                ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(),sharedMemoryManager);
-                monitorComponent.monitorExecution(execRes, nextSeed,ti,energy);
+                    ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
+                    monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
-                lastSeedCoverage = sharedMemoryManager.getCoverageRate();
-                newseed.setCoverageRate(lastSeedCoverage);
+                    lastSeedCoverage = sharedMemoryManager.getCoverageRate();
+                    newseed.setCoverageRate(lastSeedCoverage);
 
-                if (execRes.isCrash()) {
-                    findCrash = true;
-                    newseed.markCrashed();
+                    if (execRes.isCrash()) {
+                        findCrash = true;
+                        newseed.markCrashed();
+                    }
+
+                    if (!observedRes.contains(execRes)) {
+                        observedRes.add(execRes);
+                        newseed.markFavored();
+                    }
+                    seedQueue.add(newseed);
+                }catch (IOException e){
+                    System.out.println("Invalid input with '\\0'.");
                 }
-
-                if (!observedRes.contains(execRes)) {
-                    observedRes.add(execRes);
-                    newseed.markFavored();
-                }
-                seedQueue.add(newseed);
             }
             seedQueue.remove(nextSeed);
 
             // Seed retirement logic
             if (seedQueue.size() > 500 || findCrash) {
                 shrinkQueue(seedQueue);
+                if(seedQueue.isEmpty()) {
+                    System.out.println("SeedQueue is empty. Reset to original seed.");
+                    seedQueue = prepare();
+                }
             }
 
             // Evaluation logic

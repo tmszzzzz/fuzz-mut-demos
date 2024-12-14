@@ -55,7 +55,7 @@ public class FuzzUtils {
     }
 
     public static void shrinkQueue(List<Seed> seedQueue) {
-        seedQueue.removeIf(seed -> !seed.isFavored());
+        seedQueue.removeIf(seed -> !seed.isFavored() && !seed.isCrash());
     }
 
 }
