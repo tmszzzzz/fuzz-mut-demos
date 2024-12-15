@@ -2,23 +2,21 @@ package edu.nju.isefuzz.fuzzer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static edu.nju.isefuzz.fuzzer.FuzzUtils.*;
 
 public class DemoMutationBlackBoxFuzzer {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 3) {
-            System.out.println("DemoMutationBlackBoxFuzzer: <classpath> <target_name> <out_dir>");
+        if (args.length != 4 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
+            System.out.println("DemoMutationBlackBoxFuzzer: <classpath> <out_dir> <file | string> <init_seed>");
             System.exit(0);
         }
         String cp = args[0];
-        String tn = args[1];
-        File outDir = new File(args[2]);
+        File outDir = new File(args[1]);
+        boolean input_by_file = Objects.equals(args[2], "file");
+        Seed initSeed = new Seed(args[3]);
 
         // Initialize components
         ExecutionComponent execComponent = new ExecutionComponent();
@@ -28,7 +26,7 @@ public class DemoMutationBlackBoxFuzzer {
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
         EvaluationComponent evaluationComponent = new EvaluationComponent(new ArrayList<>(), new HashSet<>());
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
-        List<Seed> seedQueue = prepare();
+        List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();
 
         // Fuzzing loop
@@ -45,7 +43,7 @@ public class DemoMutationBlackBoxFuzzer {
                 try {
                     Seed newseed = new Seed(ti, false);
 
-                    ExecutionResult execRes = execComponent.execute(cp, tn, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
+                    ExecutionResult execRes = execComponent.execute(cp, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
                     lastSeedCoverage = sharedMemoryManager.getCoverageRate();
@@ -72,7 +70,7 @@ public class DemoMutationBlackBoxFuzzer {
                 shrinkQueue(seedQueue);
                 if(seedQueue.isEmpty()) {
                     System.out.println("SeedQueue is empty. Reset to original seed.");
-                    seedQueue = prepare();
+                    seedQueue = prepare(initSeed);
                 }
             }
 

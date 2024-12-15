@@ -10,7 +10,6 @@ public class FuzzUtils {
     /**
      * An exemplified seed.
      */
-    static Seed initSeed = new Seed("helln", true);
 
 
     /**
@@ -18,7 +17,7 @@ public class FuzzUtils {
      * collect seeds to build and corpus and minimize the corpus to
      * produce a selective seed queue for fuzzing
      */
-    public static List<Seed> prepare() {
+    public static List<Seed> prepare(Seed initSeed) {
         return new ArrayList<>(Collections.singletonList(initSeed));
     }
 
