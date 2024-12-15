@@ -20,19 +20,12 @@ public class ExecutionComponent {
      */
     public ExecutionResult execute(String binaryPath, String input, int shmId, SharedMemoryManager shmManager) throws IOException, InterruptedException {
         // 创建进程构建器
-        ProcessBuilder pb = new ProcessBuilder(binaryPath);
+        ProcessBuilder pb = new ProcessBuilder(binaryPath,input);
         pb.redirectErrorStream(true); // 将标准错误重定向到标准输出
         pb.environment().put("__AFL_SHM_ID", String.valueOf(shmId)); // 设置共享内存环境变量
 
         // 启动进程
         Process process = pb.start();
-
-        // 向目标进程的标准输入写入测试输入
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
-            writer.write(input);
-            writer.flush();
-        }
-
         // 捕获输出流
         BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
