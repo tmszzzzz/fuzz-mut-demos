@@ -60,9 +60,9 @@ public class ExecutionComponent {
         }
 
         // 获取覆盖率信息（如果存在共享内存管理器）
-        double coverageRate = shmManager != null ? shmManager.getCoverageRate() : 0.0;
+        int coverageRate = shmManager != null ? shmManager.getCoverageRate() : 0;
 
         // 返回执行结果
-        return new ExecutionResult(output, exitCode, (int) coverageRate);
+        return new ExecutionResult(output, exitCode, coverageRate);
     }
 }
