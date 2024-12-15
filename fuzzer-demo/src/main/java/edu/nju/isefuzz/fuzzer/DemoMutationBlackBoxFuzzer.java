@@ -33,6 +33,7 @@ public class DemoMutationBlackBoxFuzzer {
         int fuzzRnd = 0;
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
+        sharedMemoryManager.clearBitmap();
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
             int lastSeedCoverage = nextSeed.getCoverageRate();
@@ -42,7 +43,7 @@ public class DemoMutationBlackBoxFuzzer {
             for (String ti : testInputs) {
                 try {
                     Seed newseed = new Seed(ti, false);
-
+                    sharedMemoryManager.clearBitmap();
                     ExecutionResult execRes = execComponent.execute(cp, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
