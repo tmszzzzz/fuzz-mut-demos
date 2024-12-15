@@ -10,7 +10,7 @@ public class DemoMutationBlackBoxFuzzer {
 
     public static void main(String[] args) throws Exception {
         if (args.length != 4 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
-            System.out.println("DemoMutationBlackBoxFuzzer: <classpath> <out_dir> <file | string> <init_seed>");
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed>");
             System.exit(0);
         }
         String cp = args[0];
@@ -33,9 +33,9 @@ public class DemoMutationBlackBoxFuzzer {
         int fuzzRnd = 0;
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
-        int lastSeedCoverage = 0;
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
+            int lastSeedCoverage = nextSeed.getCoverageRate();
             int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
             Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
@@ -46,18 +46,22 @@ public class DemoMutationBlackBoxFuzzer {
                     ExecutionResult execRes = execComponent.execute(cp, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
-                    lastSeedCoverage = sharedMemoryManager.getCoverageRate();
-                    newseed.setCoverageRate(lastSeedCoverage);
+                    int cov = sharedMemoryManager.getCoverageRate();
+                    newseed.setCoverageRate(cov);
+
+                    if(cov > lastSeedCoverage){
+                        newseed.markFavored();
+                    }
 
                     if (execRes.isCrash()) {
                         findCrash = true;
                         newseed.markCrashed();
                     }
 
-                    if (!observedRes.contains(execRes)) {
-                        observedRes.add(execRes);
-                        newseed.markFavored();
-                    }
+                    //if (!observedRes.contains(execRes)) {
+                    //    observedRes.add(execRes);
+                    //    newseed.markFavored();
+                    //}
                     seedQueue.add(newseed);
                 }catch (IOException e){
                     System.out.println("Invalid input with '\\0'.");

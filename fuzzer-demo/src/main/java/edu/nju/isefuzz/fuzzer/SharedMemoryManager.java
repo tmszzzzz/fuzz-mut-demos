@@ -13,7 +13,7 @@ public class SharedMemoryManager {
         int shmctl(int shmid, int cmd, Pointer buf);
     }
     private static final int BITMAP_SIZE = 65536;
-    private static final int KEY = 1145;
+    private static final int KEY = 1146;
     private static final int IPC_CREAT = 01000; // 创建共享内存标志
     private static final int IPC_RMID = 0;     // 删除共享内存标志
 

@@ -10,7 +10,7 @@ public class ExecutionMonitorComponent {
     // Monitors execution results
     public void monitorExecution(ExecutionResult execRes, Seed seed, String ti, int seedEnergy) {
         // Log the execution result
-        System.out.printf("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n" + execRes.getInfo()+ "\n----------" + "\nCoverage: " + execRes.getCoverageRate() +
+        System.out.printf("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n" + /*execRes.getInfo()*/"Info output disabled.\n" + "----------" + "\nCoverage: " + execRes.getCoverageRate() +
                 "\nSeed: `%s`\n" +
                 "Seed Energy: `%d`\n" +
                 "Test Input: `%s`\n", seed,seedEnergy,ti);
