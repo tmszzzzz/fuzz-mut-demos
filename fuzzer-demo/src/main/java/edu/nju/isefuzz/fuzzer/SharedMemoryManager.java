@@ -43,6 +43,12 @@ public class SharedMemoryManager {
         return shmPtr.getByteArray(0, BITMAP_SIZE);
     }
 
+    public void clearBitmap() {
+        byte[] emptyBitmap = new byte[BITMAP_SIZE]; // 自动初始化为全 0
+        shmPtr.write(0, emptyBitmap, 0, BITMAP_SIZE);
+    }
+
+
     public int getCoverageRate() {
         byte[] coverageBitmap = readCoverageBitmap();
         int totalCovered = 0;
