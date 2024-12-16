@@ -2,6 +2,8 @@ package edu.nju.isefuzz.fuzzer;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +33,23 @@ public class DemoMutationBlackBoxFuzzer {
         File outDir = new File(args[1]);
         boolean input_by_file = Objects.equals(args[2], "file");
         Seed initSeed = new Seed(args[3],input_by_file);
-
+        FuzzUtils.clearDirectory("./mutated_inputs");
+        FuzzUtils.createDirectory("./mutated_inputs");
+        if(input_by_file) {
+            File sourceFile = new File(initSeed.getContent()); // Get the source file
+            if (!sourceFile.exists()) {
+                System.err.println("[ERROR] Source file of initial seed does not exist: " + sourceFile.getAbsolutePath());
+            }
+            File seedFile = new File("./mutated_inputs/", sourceFile.getName());
+            try {
+                Files.copy(sourceFile.toPath(), seedFile.toPath());
+                initSeed = new Seed(String.valueOf(seedFile.toPath()),true);
+                System.out.println("[FUZZER] Copied file to: " + seedFile.getAbsolutePath());
+            } catch (IOException e) {
+                System.err.println("[ERROR] Failed to copy file: " + e.getMessage());
+                System.exit(1);
+            }
+        }
         // Initialize components
         ExecutionComponent execComponent = new ExecutionComponent();
         ExecutionMonitorComponent monitorComponent = new ExecutionMonitorComponent();
@@ -49,8 +67,6 @@ public class DemoMutationBlackBoxFuzzer {
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
         sharedMemoryManager.clearBitmap();
-        FuzzUtils.clearDirectory("./mutated_inputs");
-        FuzzUtils.createDirectory("./mutated_inputs");
         System.out.printf("Test will last for %s seconds.\n",seconds);
         TimeUnit.SECONDS.sleep(3);
 

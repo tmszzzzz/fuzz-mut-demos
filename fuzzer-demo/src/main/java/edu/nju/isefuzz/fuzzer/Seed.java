@@ -1,8 +1,10 @@
 package edu.nju.isefuzz.fuzzer;
 
+import java.io.File;
+
 public class Seed {
     private boolean input_by_file;
-    private final String content;
+    private String content;
     private boolean isFavored;
     private boolean isCrash;
     private int Coverage_rate;
@@ -64,4 +66,5 @@ public class Seed {
     public boolean isInputByFile() {
         return input_by_file;
     }
+
 }
