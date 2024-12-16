@@ -57,7 +57,7 @@ public class DemoMutationBlackBoxFuzzer {
                 StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
-        EvaluationComponent evaluationComponent = new EvaluationComponent();
+        EvaluationComponent evaluationComponent = new EvaluationComponent(60);
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();
@@ -71,7 +71,9 @@ public class DemoMutationBlackBoxFuzzer {
         TimeUnit.SECONDS.sleep(3);
 
         long startTime = System.currentTimeMillis();
+        long nextInterval = startTime + evaluationComponent.intervalSeconds * 1000L; // 下一个记录的时间点
         long endTime = startTime + seconds * 1000L;
+        int elapsedRounds = 0;
 
         while (System.currentTimeMillis() < endTime) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
@@ -90,6 +92,7 @@ public class DemoMutationBlackBoxFuzzer {
                     newseed.setCoverageRate(cov);
                     int lastSeedCoverage = nextSeed.getCoverageRate();
                     newseed.setPreviousCoverage(lastSeedCoverage);
+                    evaluationComponent.updateCoverageData(cov);
                     evaluationComponent.addCoverage(cov);
                     evaluationComponent.addAllSeeds();
                     if(cov > lastSeedCoverage){
@@ -108,6 +111,7 @@ public class DemoMutationBlackBoxFuzzer {
                     //    newseed.markFavored();
                     //}
                     seedQueue.add(newseed);
+
                 }catch (IOException e){
                     System.out.printf("Error: %s\n",e.getMessage());
                 }
@@ -130,12 +134,17 @@ public class DemoMutationBlackBoxFuzzer {
 
             // Evaluation logic
             evaluationComponent.evaluate();
-
-            //if (findCrash) break;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime >= nextInterval) {
+                evaluationComponent.recordAndReset(elapsedRounds * evaluationComponent.intervalSeconds);
+                elapsedRounds++;
+                nextInterval += evaluationComponent.intervalSeconds * 1000L; // 更新下一个时间点
+            }
         }
 
         // Postprocess the seeds
         postprocess(outDir, seedQueue);
+        evaluationComponent.saveCoverageWithBoundsToCSV("Coverage.csv");
         sharedMemoryManager.destroySharedMemory();
     }
 }
