@@ -1,12 +1,14 @@
 package edu.nju.isefuzz.fuzzer;
 
 public class Seed {
-    private String content;
+    private boolean input_by_file;
+    private final String content;
     private boolean isFavored;
     private boolean isCrash;
     private int Coverage_rate;
 
-    public Seed(String content, boolean isFavored) {
+    public Seed(String content, boolean isFavored, boolean input_by_file) {
+        this.input_by_file = input_by_file;
         this.content = content;
         this.isFavored = isFavored;
         this.isCrash = false;
@@ -14,7 +16,11 @@ public class Seed {
     }
 
     public Seed(String content) {
-        this(content, false);
+        this(content, false,false);
+    }
+
+    public Seed(String content,boolean input_by_file) {
+        this(content, false,input_by_file);
     }
 
     public void markFavored() {
