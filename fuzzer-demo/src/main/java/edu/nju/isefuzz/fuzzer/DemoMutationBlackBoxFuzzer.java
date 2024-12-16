@@ -57,7 +57,7 @@ public class DemoMutationBlackBoxFuzzer {
                 StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
-        EvaluationComponent evaluationComponent = new EvaluationComponent(60);
+        EvaluationComponent evaluationComponent = new EvaluationComponent(300);
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();
