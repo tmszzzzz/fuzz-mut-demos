@@ -98,6 +98,35 @@ public class FuzzUtils {
         }
     }
 
+    public static void shrinkQueueByCov(List<Seed> seedQueue) {
+        // If there are less than or equal to 100 seeds, do nothing
+        if (seedQueue.size() <= 100) {
+            return;
+        }
+
+        // Sort the seeds by coverage rate in descending order
+        seedQueue.sort(Comparator.comparingDouble(Seed::getCoverageRate).reversed());
+
+        // Keep the top 100 seeds with the highest coverage rate
+        List<Seed> topSeeds = seedQueue.subList(0, 100);
+
+        // Identify seeds that need to be deleted (not in the top 100)
+        List<Seed> needToBeDeleted = new ArrayList<>(seedQueue.subList(100, seedQueue.size()));
+
+        // Remove seeds not in the top 100 and clean up associated files
+        for (Seed seed : needToBeDeleted) {
+            if (seed.isInputByFile()) {
+                boolean f = FuzzUtils.deleteFile(seed.getContent());
+                if (!f) {
+                    System.out.printf("Failed to delete %s\n", seed.getContent());
+                }
+            }
+        }
+
+        // Retain only the top 100 seeds in the seedQueue
+        seedQueue.retainAll(topSeeds);
+    }
+
     public static void clearDirectory(String path) {
         File directory = new File(path);
 

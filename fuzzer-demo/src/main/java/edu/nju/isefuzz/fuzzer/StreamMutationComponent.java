@@ -160,11 +160,10 @@ public class StreamMutationComponent extends MutationComponent {
         String sExt = getSeedExt(seed.getContent());
 
         Random rand = new Random();
-        int mutations = rand.nextInt(5) + 1;
         Set<byte[]> mutatedInputs = new HashSet<>();
         Set<String> outs = new HashSet<>();
 
-        for (int i = 0; i < mutations; i++) {
+        for (int i = 0; i < energy; i++) {
             int choice = rand.nextInt(5);
             switch (choice) {
                 case 0 -> mutatedInputs.add(bitflip(sCont, 32 + rand.nextInt(64)));

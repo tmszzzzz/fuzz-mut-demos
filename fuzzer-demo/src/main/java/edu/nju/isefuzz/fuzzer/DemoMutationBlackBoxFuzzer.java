@@ -3,20 +3,34 @@ package edu.nju.isefuzz.fuzzer;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static edu.nju.isefuzz.fuzzer.FuzzUtils.*;
 
 public class DemoMutationBlackBoxFuzzer {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 4 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
-            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed>");
+        if (args.length != 5 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
+            System.exit(0);
+        }
+        int seconds = 0;
+        try{
+            seconds = Integer.parseInt(args[4]);
+            if(seconds <= 0){
+                System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
+                System.out.println("fuzz_time should be positive.");
+                System.exit(0);
+            }
+        }catch (NumberFormatException e){
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
+            System.out.println("fuzz_time should be a number.");
             System.exit(0);
         }
         String cp = args[0];
         File outDir = new File(args[1]);
         boolean input_by_file = Objects.equals(args[2], "file");
-        Seed initSeed = new Seed(args[3]);
+        Seed initSeed = new Seed(args[3],input_by_file);
 
         // Initialize components
         ExecutionComponent execComponent = new ExecutionComponent();
@@ -37,7 +51,13 @@ public class DemoMutationBlackBoxFuzzer {
         sharedMemoryManager.clearBitmap();
         FuzzUtils.clearDirectory("./mutated_inputs");
         FuzzUtils.createDirectory("./mutated_inputs");
-        while (true) {
+        System.out.printf("Test will last for %s seconds.\n",seconds);
+        TimeUnit.SECONDS.sleep(3);
+
+        long startTime = System.currentTimeMillis();
+        long endTime = startTime + seconds * 1000L;
+
+        while (System.currentTimeMillis() < endTime) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
             int lastSeedCoverage = nextSeed.getCoverageRate();
             int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
@@ -79,18 +99,19 @@ public class DemoMutationBlackBoxFuzzer {
             //seedQueue.remove(nextSeed);
 
             // Seed retirement logic
-            if (seedQueue.size() > 500 || findCrash) {
-                shrinkQueue(seedQueue);
-                if(seedQueue.isEmpty()) {
-                    System.out.println("SeedQueue is empty. Reset to original seed.");
-                    seedQueue = prepare(initSeed);
-                }
+            if (seedQueue.size() > 500) {
+                shrinkQueueByCov(seedQueue);
+            }
+
+            if(seedQueue.isEmpty()) {
+                System.out.println("SeedQueue is empty. Reset to original seed.");
+                seedQueue = prepare(initSeed);
             }
 
             // Evaluation logic
             evaluationComponent.evaluate();
 
-            if (findCrash) break;
+            //if (findCrash) break;
         }
 
         // Postprocess the seeds
