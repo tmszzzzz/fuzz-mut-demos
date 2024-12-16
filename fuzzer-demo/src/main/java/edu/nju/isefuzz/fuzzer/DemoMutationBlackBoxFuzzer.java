@@ -21,7 +21,8 @@ public class DemoMutationBlackBoxFuzzer {
         // Initialize components
         ExecutionComponent execComponent = new ExecutionComponent();
         ExecutionMonitorComponent monitorComponent = new ExecutionMonitorComponent();
-        MutationComponent mutationComponent = new MutationComponent();
+        MutationComponent mutationComponent = StringMutationComponent.getInstance(),
+                streamMutationComponent = StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
         EvaluationComponent evaluationComponent = new EvaluationComponent(new ArrayList<>(), new HashSet<>());
@@ -38,7 +39,9 @@ public class DemoMutationBlackBoxFuzzer {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
             int lastSeedCoverage = nextSeed.getCoverageRate();
             int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
-            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
+
+            // TODO - This is to be modified
+            Set<String> testInputs = streamMutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
             for (String ti : testInputs) {
                 try {
