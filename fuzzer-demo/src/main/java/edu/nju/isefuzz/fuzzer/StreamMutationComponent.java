@@ -17,7 +17,10 @@ public class StreamMutationComponent extends MutationComponent {
     private static StreamMutationComponent instance;
     private StreamMutationComponent() {}
     public static StreamMutationComponent getInstance() {
-        return instance == null ? new StreamMutationComponent() : instance;
+        if(instance == null) {
+            instance = new StreamMutationComponent();
+        }
+        return instance;
     }
 
 
@@ -229,7 +232,7 @@ public class StreamMutationComponent extends MutationComponent {
      * This is only for testing purpose, and is subjected to be removed!!!
      */
     public static void main(String[] args) {
-        Seed seed = new Seed("./not_kitty.png", false, true);
+        Seed seed = new Seed("fuzzer-demo/src/main/java/edu/nju/isefuzz/SEEDS/djpeg/not_kitty.jpg", false, true);
         StreamMutationComponent.getInstance().fuzzOneOriginal(seed);
     }
 

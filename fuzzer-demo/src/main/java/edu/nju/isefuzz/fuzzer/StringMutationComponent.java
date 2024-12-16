@@ -14,7 +14,10 @@ public class StringMutationComponent extends MutationComponent {
     private static StringMutationComponent instance;
     private StringMutationComponent() {}
     public static StringMutationComponent getInstance() {
-        return instance == null ? new StringMutationComponent() : instance;
+        if(instance == null) {
+            instance = new StringMutationComponent();
+        }
+        return instance;
     }
 
 

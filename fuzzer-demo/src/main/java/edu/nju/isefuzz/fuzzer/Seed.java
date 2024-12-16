@@ -60,4 +60,8 @@ public class Seed {
         String suffix = this.isFavored ? "@favored" : "@unfavored";
         return this.content + suffix;
     }
+
+    public boolean isInputByFile() {
+        return input_by_file;
+    }
 }

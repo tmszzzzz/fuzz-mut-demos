@@ -21,8 +21,8 @@ public class DemoMutationBlackBoxFuzzer {
         // Initialize components
         ExecutionComponent execComponent = new ExecutionComponent();
         ExecutionMonitorComponent monitorComponent = new ExecutionMonitorComponent();
-        MutationComponent mutationComponent = StringMutationComponent.getInstance(),
-                streamMutationComponent = StringMutationComponent.getInstance();
+        MutationComponent mutationComponent = input_by_file ?
+                StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
         EvaluationComponent evaluationComponent = new EvaluationComponent(new ArrayList<>(), new HashSet<>());
@@ -35,17 +35,18 @@ public class DemoMutationBlackBoxFuzzer {
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
         sharedMemoryManager.clearBitmap();
+        FuzzUtils.clearDirectory("./mutated_inputs");
+        FuzzUtils.createDirectory("./mutated_inputs");
         while (true) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
             int lastSeedCoverage = nextSeed.getCoverageRate();
             int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
 
-            // TODO - This is to be modified
-            Set<String> testInputs = streamMutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
+            Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
             for (String ti : testInputs) {
                 try {
-                    Seed newseed = new Seed(ti, false);
+                    Seed newseed = new Seed(ti, input_by_file);
                     sharedMemoryManager.clearBitmap();
                     ExecutionResult execRes = execComponent.execute(cp, ti, sharedMemoryManager.getShmId(), sharedMemoryManager);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
@@ -68,10 +69,14 @@ public class DemoMutationBlackBoxFuzzer {
                     //}
                     seedQueue.add(newseed);
                 }catch (IOException e){
-                    System.out.println("Invalid input with '\\0'.");
+                    System.out.printf("Error: %s\n",e.getMessage());
                 }
             }
-            seedQueue.remove(nextSeed);
+            //if(nextSeed.isInputByFile()){
+            //    boolean f = FuzzUtils.deleteFile(nextSeed.getContent());
+            //    if(!f) System.out.printf("Failed to delete %s\n",nextSeed.getContent());
+            //}
+            //seedQueue.remove(nextSeed);
 
             // Seed retirement logic
             if (seedQueue.size() > 500 || findCrash) {
