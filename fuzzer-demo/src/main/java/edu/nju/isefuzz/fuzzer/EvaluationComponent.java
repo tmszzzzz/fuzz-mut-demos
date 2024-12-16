@@ -59,7 +59,7 @@ public class EvaluationComponent {
 
         try (FileWriter writer = new FileWriter(outputFile)) {
             // 写入 CSV 文件的表头
-            writer.append("Time (Second),Coverage,Max Coverage,Average Coverage\n");
+            writer.append("Time (Second),Min Coverage,Max Coverage,Average Coverage\n");
 
             // 写入每一行数据
             for (int i = 0; i < timePoints.size(); i++) {

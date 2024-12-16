@@ -112,6 +112,13 @@ public class DemoMutationBlackBoxFuzzer {
                     //}
                     seedQueue.add(newseed);
 
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime >= nextInterval) {
+                        evaluationComponent.recordAndReset(elapsedRounds * evaluationComponent.intervalSeconds);
+                        elapsedRounds++;
+                        nextInterval += evaluationComponent.intervalSeconds * 1000L; // 更新下一个时间点
+                    }
+
                 }catch (IOException e){
                     System.out.printf("Error: %s\n",e.getMessage());
                 }
@@ -134,12 +141,7 @@ public class DemoMutationBlackBoxFuzzer {
 
             // Evaluation logic
             evaluationComponent.evaluate();
-            long currentTime = System.currentTimeMillis();
-            if (currentTime >= nextInterval) {
-                evaluationComponent.recordAndReset(elapsedRounds * evaluationComponent.intervalSeconds);
-                elapsedRounds++;
-                nextInterval += evaluationComponent.intervalSeconds * 1000L; // 更新下一个时间点
-            }
+
         }
 
         // Postprocess the seeds
