@@ -8,6 +8,7 @@ public class Seed {
     private boolean isFavored;
     private boolean isCrash;
     private int Coverage_rate;
+    private int previousCoverage;
 
     public Seed(String content, boolean isFavored, boolean input_by_file) {
         this.input_by_file = input_by_file;
@@ -15,6 +16,7 @@ public class Seed {
         this.isFavored = isFavored;
         this.isCrash = false;
         this.Coverage_rate = 0;
+        this.previousCoverage = 0;
     }
 
     public Seed(String content) {
@@ -41,6 +43,10 @@ public class Seed {
         return Coverage_rate;
     }
 
+    public int getPreviousCoverage() {
+        return previousCoverage;
+    }
+
     public boolean isFavored() {
         return isFavored;
     }
@@ -50,6 +56,7 @@ public class Seed {
     }
 
     public void setCoverageRate(int Coverage_rate) { this.Coverage_rate = Coverage_rate;}
+    public void setPreviousCoverage(int Coverage_rate) { this.previousCoverage = Coverage_rate;}
     @Override
     public boolean equals(Object that) {
         if (that instanceof Seed)

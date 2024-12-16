@@ -41,6 +41,7 @@ public class FuzzUtils {
         if (res)
             System.out.println("[FUZZER] Create crash directory: " + crashDir.getAbsolutePath());
         // Record seeds.
+        int written = 0;
         for (Seed s : seeds) {
             File seedFile;
 
@@ -60,7 +61,7 @@ public class FuzzUtils {
 
                 try {
                     Files.copy(sourceFile.toPath(), seedFile.toPath());
-                    System.out.println("[FUZZER] Copied file to: " + seedFile.getAbsolutePath());
+                    written++;
                 } catch (IOException e) {
                     System.err.println("[ERROR] Failed to copy file: " + e.getMessage());
                 }
@@ -68,18 +69,20 @@ public class FuzzUtils {
             } else {
                 // Handle case where content is written directly to a new file
                 if (s.isCrash())
-                    seedFile = new File(crashDir, s.getContent());
+                    seedFile = new File(crashDir, String.valueOf(UUID.randomUUID()));
                 else
-                    seedFile = new File(queueDir, s.getContent());
+                    seedFile = new File(queueDir, String.valueOf(UUID.randomUUID()));
 
                 try (FileWriter fw = new FileWriter(seedFile)) {
                     fw.write(s.getContent());
-                    System.out.println("[FUZZER] Write test input to: " + seedFile.getAbsolutePath());
+                    written++;
+
                 } catch (IOException e) {
                     System.err.println("[ERROR] Failed to write content: " + e.getMessage());
                 }
             }
         }
+        System.out.printf("[FUZZER] Write all kept %d test input to %s.\n",written,outDir.getAbsolutePath());
     }
 
     public static void shrinkQueue(List<Seed> seedQueue) {

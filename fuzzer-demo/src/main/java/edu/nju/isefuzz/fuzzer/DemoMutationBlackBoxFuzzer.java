@@ -57,7 +57,7 @@ public class DemoMutationBlackBoxFuzzer {
                 StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
-        EvaluationComponent evaluationComponent = new EvaluationComponent(new ArrayList<>(), new HashSet<>());
+        EvaluationComponent evaluationComponent = new EvaluationComponent();
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();
@@ -75,8 +75,7 @@ public class DemoMutationBlackBoxFuzzer {
 
         while (System.currentTimeMillis() < endTime) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
-            int lastSeedCoverage = nextSeed.getCoverageRate();
-            int energy = energySchedulingComponent.getMutationPower(nextSeed,lastSeedCoverage);
+            int energy = energySchedulingComponent.getMutationPower(nextSeed);
 
             Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
 
@@ -89,14 +88,19 @@ public class DemoMutationBlackBoxFuzzer {
 
                     int cov = sharedMemoryManager.getCoverageRate();
                     newseed.setCoverageRate(cov);
-
+                    int lastSeedCoverage = nextSeed.getCoverageRate();
+                    newseed.setPreviousCoverage(lastSeedCoverage);
+                    evaluationComponent.addCoverage(cov);
+                    evaluationComponent.addAllSeeds();
                     if(cov > lastSeedCoverage){
                         newseed.markFavored();
+                        evaluationComponent.addFavored();
                     }
 
                     if (execRes.isCrash()) {
                         findCrash = true;
                         newseed.markCrashed();
+                        evaluationComponent.addCrashed();
                     }
 
                     //if (!observedRes.contains(execRes)) {

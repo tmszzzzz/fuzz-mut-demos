@@ -18,6 +18,7 @@ public class ExecutionMonitorComponent {
         }
         System.out.printf(
                 "----------" + "\nCoverage: " + execRes.getCoverageRate() +
+                        "\nPrevious Coverage: " + seed.getCoverageRate() +
                 "\nSeed: `%s`\n" +
                 "Seed Energy: `%d`\n" +
                 "Test Input: `%s`\n", seed,seedEnergy,ti);

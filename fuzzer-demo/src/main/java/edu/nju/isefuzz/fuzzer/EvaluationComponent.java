@@ -4,36 +4,24 @@ import java.util.List;
 import java.util.Set;
 
 public class EvaluationComponent {
+    private int allSeeds = 0;
+    private int favoredSeeds = 0;
+    private int crashSeeds = 0;
+    private int max_Coverage_rate = 0;
 
-    private final List<Seed> seeds;
-    private final Set<ExecutionResult> observedResults;
-
-    public EvaluationComponent(List<Seed> seeds, Set<ExecutionResult> observedResults) {
-        this.seeds = seeds;
-        this.observedResults = observedResults;
+    public void addAllSeeds() {allSeeds++;}
+    public void addFavored() {favoredSeeds++;}
+    public void addCrashed() {crashSeeds++;}
+    public void addCoverage(int cov) {
+        max_Coverage_rate = Math.max(max_Coverage_rate, cov);
     }
 
     // Evaluate the fuzzing progress
     public void evaluate() {
-        int favoredSeeds = 0;
-        int crashSeeds = 0;
-        int newResults = 0;
-        int max_Coverage_rate = 0;
-
-        // Count the number of favored seeds, crash seeds, and new results
-        for (Seed seed : seeds) {
-            if (seed.isFavored()) favoredSeeds++;
-            if (seed.isCrash()) crashSeeds++;
-            if (seed.getCoverageRate() > max_Coverage_rate) max_Coverage_rate = seed.getCoverageRate();
-        }
-
-        newResults = observedResults.size();
-
-
+        System.out.printf("[EVALUATION] Seeds Num: %d\n", allSeeds);
         System.out.printf("[EVALUATION] Favored Seeds: %d\n", favoredSeeds);
         System.out.printf("[EVALUATION] Crashed Seeds: %d\n", crashSeeds);
-        System.out.printf("[EVALUATION] Unique Results: %d\n", newResults);
-        System.out.printf("[EVALUATION] Code Coverage rate : %d\n", max_Coverage_rate);
+        System.out.printf("[EVALUATION] Max Code Coverage: %d\n", max_Coverage_rate);
     }
 
 
