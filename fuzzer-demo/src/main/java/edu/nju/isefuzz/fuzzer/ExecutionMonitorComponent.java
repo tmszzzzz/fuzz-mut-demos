@@ -10,7 +10,14 @@ public class ExecutionMonitorComponent {
     // Monitors execution results
     public void monitorExecution(ExecutionResult execRes, Seed seed, String ti, int seedEnergy) {
         // Log the execution result
-        System.out.printf("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n" + /*execRes.getInfo()*/"Info output disabled.\n" + "----------" + "\nCoverage: " + execRes.getCoverageRate() +
+        System.out.print("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n");
+        try{
+            System.out.printf(execRes.getInfo());
+        }catch (Exception e){
+            System.out.print("Because of some unknown error, execution info can't be shown.");
+        }
+        System.out.printf(
+                "----------" + "\nCoverage: " + execRes.getCoverageRate() +
                 "\nSeed: `%s`\n" +
                 "Seed Energy: `%d`\n" +
                 "Test Input: `%s`\n", seed,seedEnergy,ti);
@@ -20,11 +27,11 @@ public class ExecutionMonitorComponent {
             System.out.printf("Crash detected in this input!\n");
         }
 
-        // Track new results
-        if (!observedResults.contains(execRes)) {
-            observedResults.add(execRes);
-            System.out.printf("New result found in this input!\n");
-        }
+        //// Track new results
+        //if (!observedResults.contains(execRes)) {
+        //    observedResults.add(execRes);
+        //    System.out.printf("New result found in this input!\n");
+        //}
         System.out.println("[MONITOR] END.\n" );
     }
 
