@@ -1,7 +1,11 @@
 package edu.nju.isefuzz.fuzzer;
 
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -47,8 +51,7 @@ public class EvaluationComponent {
      * @param outputFile     CSV 文件路径
      * @throws IOException   写入文件时可能出现异常
      */
-    public void saveCoverageWithBoundsToCSV(
-            String outputFile) throws IOException {
+    public void saveCoverageWithBoundsToCSV(String outputFile) throws IOException {
 
         // 检查数据合法性
         if (timePoints.size() != minCoverages.size() ||
@@ -57,7 +60,11 @@ public class EvaluationComponent {
             throw new IllegalArgumentException("All input lists must have the same length.");
         }
 
-        try (FileWriter writer = new FileWriter(outputFile)) {
+        // 创建临时文件路径
+        String tempFile = outputFile + ".tmp";
+
+        // 写入数据到临时文件
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
             // 写入 CSV 文件的表头
             writer.append("Time (Second),Min Coverage,Max Coverage,Average Coverage\n");
 
@@ -71,8 +78,14 @@ public class EvaluationComponent {
                 ));
             }
 
-            System.out.println("Coverage data with bounds successfully saved to: " + outputFile);
+            writer.flush(); // 确保数据完全写入临时文件
         }
+
+        // 原子替换临时文件到目标文件
+        Files.move(Paths.get(tempFile), Paths.get(outputFile),
+                StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+
+        System.out.println("Coverage data with bounds successfully saved to: " + outputFile);
     }
 
     public void updateCoverageData(int coverage) {
