@@ -11,7 +11,7 @@ public class SeedSchedulingComponent {
         Seed nextSeed = seeds.get(round % seeds.size());
 
         for (Seed seed : seeds) {
-            if(seed.getCoverageRate() > nextSeed.getCoverageRate()){
+            if(seed.getCoverageRateBySelected() > nextSeed.getCoverageRateBySelected()){
                 nextSeed = seed;
             }
         }

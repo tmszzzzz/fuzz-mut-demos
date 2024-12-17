@@ -77,6 +77,7 @@ public class DemoMutationBlackBoxFuzzer {
 
         while (System.currentTimeMillis() < endTime) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
+            nextSeed.selected();
             int energy = energySchedulingComponent.getMutationPower(nextSeed);
 
             Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
@@ -117,6 +118,7 @@ public class DemoMutationBlackBoxFuzzer {
                         evaluationComponent.recordAndReset(elapsedRounds * evaluationComponent.intervalSeconds);
                         elapsedRounds++;
                         nextInterval += evaluationComponent.intervalSeconds * 1000L; // 更新下一个时间点
+                        evaluationComponent.saveCoverageWithBoundsToCSV("Coverage.csv");
                     }
 
                 }catch (IOException e){
