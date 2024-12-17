@@ -80,9 +80,17 @@ public class StringMutationComponent extends MutationComponent {
         for (int i = 0; i < numMutations; i++) {
             int choice = random.nextInt(3); // Randomly choose a mutation
             switch (choice) {
-                case 0 -> result = bitflip(result);
-                case 1 -> result = arith(result);
-                case 2 -> result = interest(result);
+                case 0 :
+                    result = bitflip(result);
+                    break;
+                case 1 :
+                    result = arith(result);
+                    break;
+                case 2 :
+                    result = interest(result);
+                    break;
+                default:
+                    break;
             }
         }
         return result;
@@ -118,11 +126,20 @@ public class StringMutationComponent extends MutationComponent {
         for (int i = 0; i < energy; i++) {
             int choice = random.nextInt(5);
             switch (choice) {
-                case 0 -> mutatedInputs.add(bitflip(sCont));
-                case 1 -> mutatedInputs.add(arith(sCont));
-                case 2 -> mutatedInputs.add(interest(sCont));
-                case 3 -> mutatedInputs.add(havoc(sCont));
-                case 4 -> {
+                case 0 :
+                    mutatedInputs.add(bitflip(sCont));
+                    break;
+                case 1 :
+                    mutatedInputs.add(arith(sCont));
+                    break;
+                case 2 :
+                    mutatedInputs.add(interest(sCont));
+                    break;
+                case 3 :
+                    mutatedInputs.add(havoc(sCont));
+                    break;
+                case 4 :
+
                     if (!otherSeeds.isEmpty()) {
                         Seed other = otherSeeds.stream()
                                 .skip(random.nextInt(otherSeeds.size()))
@@ -130,7 +147,9 @@ public class StringMutationComponent extends MutationComponent {
                                 .orElse(seed);
                         mutatedInputs.add(splice(sCont, other.getContent()));
                     }
-                }
+                    break;
+                default:
+                    break;
             }
         }
         return mutatedInputs;
@@ -152,9 +171,17 @@ public class StringMutationComponent extends MutationComponent {
         for (int i = 0; i < mutations; i++) {
             int choice = random.nextInt(3);
             switch (choice) {
-                case 0 -> mutatedInputs.add(bitflip(sCont));
-                case 1 -> mutatedInputs.add(arith(sCont));
-                case 2 -> mutatedInputs.add(interest(sCont));
+                case 0 :
+                    mutatedInputs.add(bitflip(sCont));
+                    break;
+                case 1 :
+                    mutatedInputs.add(arith(sCont));
+                    break;
+                case 2 :
+                    mutatedInputs.add(interest(sCont));
+                    break;
+                default:
+                    break;
             }
         }
 

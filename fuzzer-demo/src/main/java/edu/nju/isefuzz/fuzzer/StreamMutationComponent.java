@@ -166,11 +166,23 @@ public class StreamMutationComponent extends MutationComponent {
         for (int i = 0; i < energy; i++) {
             int choice = rand.nextInt(5);
             switch (choice) {
-                case 0 -> mutatedInputs.add(bitflip(sCont, 32 + rand.nextInt(64)));
-                case 1 -> mutatedInputs.add(byteReplacement(sCont, 4 + rand.nextInt(8)));
-                case 2 -> mutatedInputs.add(byteInsertion(sCont, 2 + rand.nextInt(4)));
-                case 3 -> mutatedInputs.add(byteDeletion(sCont, 2 + rand.nextInt(4)));
-                case 4 -> mutatedInputs.add(blockSwap(sCont, 4 + rand.nextInt(8)));
+                case 0 :
+                    mutatedInputs.add(bitflip(sCont, 32 + rand.nextInt(64)));
+                    break;
+                case 1 :
+                    mutatedInputs.add(byteReplacement(sCont, 4 + rand.nextInt(8)));
+                    break;
+                case 2 :
+                    mutatedInputs.add(byteInsertion(sCont, 2 + rand.nextInt(4)));
+                    break;
+                case 3 :
+                    mutatedInputs.add(byteDeletion(sCont, 2 + rand.nextInt(4)));
+                    break;
+                case 4 :
+                    mutatedInputs.add(blockSwap(sCont, 4 + rand.nextInt(8)));
+                    break;
+                default:
+                    break;
             }
         }
 
