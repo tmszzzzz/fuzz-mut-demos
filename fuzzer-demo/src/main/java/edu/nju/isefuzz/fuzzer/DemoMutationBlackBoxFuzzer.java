@@ -12,21 +12,23 @@ import static edu.nju.isefuzz.fuzzer.FuzzUtils.*;
 public class DemoMutationBlackBoxFuzzer {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 5 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
-            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
+        if (args.length != 6 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second> <output_interval>");
             System.exit(0);
         }
         int seconds = 0;
+        int intervals = 0;
         try{
             seconds = Integer.parseInt(args[4]);
-            if(seconds <= 0){
-                System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
-                System.out.println("fuzz_time should be positive.");
+            intervals = Integer.parseInt(args[5]);
+            if(seconds <= 0 || intervals <= 0){
+                System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second> <output_interval>");
+                System.out.println("fuzz_time and output_interval should be positive.");
                 System.exit(0);
             }
         }catch (NumberFormatException e){
             System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
-            System.out.println("fuzz_time should be a number.");
+            System.out.println("fuzz_time and output_interval should be a number.");
             System.exit(0);
         }
         String cp = args[0];
@@ -57,7 +59,7 @@ public class DemoMutationBlackBoxFuzzer {
                 StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
-        EvaluationComponent evaluationComponent = new EvaluationComponent(300);
+        EvaluationComponent evaluationComponent = new EvaluationComponent(intervals);
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();

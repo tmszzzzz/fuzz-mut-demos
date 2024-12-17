@@ -21,9 +21,9 @@ public class EnergySchedulingComponent {
 
 
         // 如果种子触发了崩溃，增加额外能量
-        if (currentSeed.isCrash()) {
-            energy += 3; // 崩溃种子额外增加 3 次变异
-        }
+        //if (currentSeed.isCrash()) {
+        //    energy += 3; // 崩溃种子额外增加 3 次变异
+        //}
 
         // 如果种子被标记为 favored，增加额外能量
         if (currentSeed.isFavored()) {
