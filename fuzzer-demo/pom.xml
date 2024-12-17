@@ -59,6 +59,17 @@
                     <target>14</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>edu.nju.isefuzz.fuzzer.DemoMutationBlackBoxFuzzer</Main-Class> <!-- 修改为你实际的主类 -->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
