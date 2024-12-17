@@ -69,7 +69,7 @@ public class DemoMutationBlackBoxFuzzer {
         boolean findCrash = false;
         sharedMemoryManager.createSharedMemory(65536);
         sharedMemoryManager.clearBitmap();
-        System.out.printf("Test will last for %s seconds.\n",seconds);
+        System.out.printf("Test will last for %d seconds, and record results every %d seconds.\n",seconds,intervals);
         TimeUnit.SECONDS.sleep(3);
 
         long startTime = System.currentTimeMillis();

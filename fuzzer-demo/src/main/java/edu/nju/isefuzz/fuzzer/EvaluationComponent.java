@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Set;
 
 public class EvaluationComponent {
-    private int allSeeds = 0;
-    private int favoredSeeds = 0;
-    private int crashSeeds = 0;
+    private long allSeeds = 0;
+    private long favoredSeeds = 0;
+    private long crashSeeds = 0;
     private int max_Coverage_rate = 0;
     // 新增成员变量
     public final int intervalSeconds; // 数据记录的时间间隔
