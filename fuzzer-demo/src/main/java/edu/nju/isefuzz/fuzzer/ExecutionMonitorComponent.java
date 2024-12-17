@@ -12,16 +12,16 @@ public class ExecutionMonitorComponent {
         // Log the execution result
         System.out.print("\n[MONITOR] Monitoring Execution...\nExecution Info:\n"+ "----------\n");
         try{
-            System.out.printf(execRes.getInfo());
+            System.out.printf(execRes.getInfo().length()>100?execRes.getInfo().substring(0,100) + "..." : execRes.getInfo());
         }catch (Exception e){
             System.out.print("Because of some unknown error, execution info can't be shown.");
         }
         System.out.printf(
-                "----------" + "\nCoverage: " + execRes.getCoverageRate() +
+                "\n----------" + "\nCoverage: " + execRes.getCoverageRate() +
                         "\nPrevious Coverage: " + seed.getCoverageRate() +
                 "\nSeed: `%s`\n" +
                 "Seed Energy: `%d`\n" +
-                "Test Input: `%s`\n", seed,seedEnergy,ti);
+                "Test Input: `%s`\n", seed.toString().length()>100?seed.toString().substring(0,100) + "...":seed,seedEnergy,ti.length()>100?ti.substring(0,100) + "...":ti);
 
         // Check if a crash was found
         if (execRes.isCrash()) {

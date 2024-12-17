@@ -9,6 +9,15 @@ public class Seed {
     private boolean isCrash;
     private int Coverage_rate;
     private int previousCoverage;
+    private int selected_times=0;
+
+    public void selected() {
+        selected_times++;
+    }
+
+    public int getCoverageRateBySelected() {
+        return Coverage_rate-selected_times;
+    }
 
     public Seed(String content, boolean isFavored, boolean input_by_file) {
         this.input_by_file = input_by_file;

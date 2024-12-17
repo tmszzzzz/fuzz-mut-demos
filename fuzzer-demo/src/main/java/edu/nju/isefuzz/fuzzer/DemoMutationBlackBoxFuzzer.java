@@ -57,7 +57,7 @@ public class DemoMutationBlackBoxFuzzer {
                 StreamMutationComponent.getInstance() : StringMutationComponent.getInstance();
         SeedSchedulingComponent schedulingComponent = new SeedSchedulingComponent();
         EnergySchedulingComponent energySchedulingComponent = new EnergySchedulingComponent();
-        EvaluationComponent evaluationComponent = new EvaluationComponent(60);
+        EvaluationComponent evaluationComponent = new EvaluationComponent(300);
         SharedMemoryManager sharedMemoryManager = new SharedMemoryManager();
         List<Seed> seedQueue = prepare(initSeed);
         Set<ExecutionResult> observedRes = new HashSet<>();
@@ -77,6 +77,7 @@ public class DemoMutationBlackBoxFuzzer {
 
         while (System.currentTimeMillis() < endTime) {
             Seed nextSeed = schedulingComponent.pickSeed(seedQueue, ++fuzzRnd, observedRes);
+            nextSeed.selected();
             int energy = energySchedulingComponent.getMutationPower(nextSeed);
 
             Set<String> testInputs = mutationComponent.fuzzOne(nextSeed, new HashSet<Seed>(seedQueue),energy);
@@ -117,6 +118,7 @@ public class DemoMutationBlackBoxFuzzer {
                         evaluationComponent.recordAndReset(elapsedRounds * evaluationComponent.intervalSeconds);
                         elapsedRounds++;
                         nextInterval += evaluationComponent.intervalSeconds * 1000L; // 更新下一个时间点
+                        evaluationComponent.saveCoverageWithBoundsToCSV("Coverage.csv");
                     }
 
                 }catch (IOException e){
