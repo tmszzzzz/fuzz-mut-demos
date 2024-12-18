@@ -11,14 +11,13 @@ public class ExecutionComponent {
      * 执行二进制模糊目标，并返回执行结果。
      *
      * @param binaryPath 二进制文件路径
-     * @param input      模糊测试生成的输入
      * @param shmId      共享内存 ID，用于覆盖率反馈
      * @param shmManager 共享内存管理器，用于获取覆盖率信息
      * @return ExecutionResult 包含目标输出、退出码和覆盖率
      * @throws IOException          如果进程启动错误
      * @throws InterruptedException 如果执行被中断
      */
-    public ExecutionResult execute(String binaryPath,int shmId, SharedMemoryManager shmManager) throws IOException, InterruptedException {
+    public ExecutionResult execute(String binaryPath,int shmId, SharedMemoryManager shmManager, String input_by_stream) throws IOException, InterruptedException {
         // 创建进程构建器
         ProcessBuilder pb = new ProcessBuilder(binaryPath.split(" "));
         pb.redirectErrorStream(true); // 将标准错误重定向到标准输出
@@ -26,6 +25,28 @@ public class ExecutionComponent {
 
         // 启动进程
         Process process = pb.start();
+
+        // 如果 input_by_stream 不为 null，将其解析为输入流
+        if (input_by_stream != null) {
+            File inputFile = new File(input_by_stream);
+            if (!inputFile.exists() || !inputFile.isFile()) {
+                throw new IOException("Input file does not exist: " + input_by_stream);
+            }
+
+            // 将文件内容写入进程的标准输入流
+            try (BufferedInputStream fileInputStream = new BufferedInputStream(new FileInputStream(inputFile));
+                 OutputStream processInputStream = process.getOutputStream()) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                    processInputStream.write(buffer, 0, bytesRead);
+                }
+                processInputStream.flush(); // 确保数据全部写入
+                processInputStream.close(); // 关闭输入流
+            } catch (IOException e) {
+                throw new IOException("Failed to pass input file to process", e);
+            }
+        }
         // 捕获输出流
         BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 

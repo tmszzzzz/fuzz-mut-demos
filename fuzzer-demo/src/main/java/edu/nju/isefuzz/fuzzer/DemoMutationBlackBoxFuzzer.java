@@ -12,8 +12,8 @@ import static edu.nju.isefuzz.fuzzer.FuzzUtils.*;
 public class DemoMutationBlackBoxFuzzer {
 
     public static void main(String[] args) throws Exception {
-        if (args.length != 6 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string"))) {
-            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second> <output_interval>");
+        if (args.length != 6 || (!Objects.equals(args[2], "file") && !Objects.equals(args[2], "string")&& !Objects.equals(args[2], "stream"))) {
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string | stream> <init_seed> <fuzz_second> <output_interval>");
             System.exit(0);
         }
         int seconds = 0;
@@ -22,18 +22,18 @@ public class DemoMutationBlackBoxFuzzer {
             seconds = Integer.parseInt(args[4]);
             intervals = Integer.parseInt(args[5]);
             if(seconds <= 0 || intervals <= 0){
-                System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second> <output_interval>");
+                System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string | stream> <init_seed> <fuzz_second> <output_interval>");
                 System.out.println("fuzz_time and output_interval should be positive.");
                 System.exit(0);
             }
         }catch (NumberFormatException e){
-            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string> <init_seed> <fuzz_second>");
+            System.out.println("DemoMutationBlackBoxFuzzer: <target_path> <out_dir> <file | string | stream> <init_seed> <fuzz_second>");
             System.out.println("fuzz_time and output_interval should be a number.");
             System.exit(0);
         }
         String cp = args[0];
         File outDir = new File(args[1]);
-        boolean input_by_file = Objects.equals(args[2], "file");
+        boolean input_by_file = Objects.equals(args[2], "file") || Objects.equals(args[2], "stream");
         Seed initSeed = new Seed(args[3],input_by_file);
         FuzzUtils.clearDirectory("./mutated_inputs");
         FuzzUtils.createDirectory("./mutated_inputs");
@@ -89,7 +89,7 @@ public class DemoMutationBlackBoxFuzzer {
                     Seed newseed = new Seed(ti, input_by_file);
                     sharedMemoryManager.clearBitmap();
                     String input = cp.replace("@@",newseed.getContent());
-                    ExecutionResult execRes = execComponent.execute(input, sharedMemoryManager.getShmId(), sharedMemoryManager);
+                    ExecutionResult execRes = execComponent.execute(input, sharedMemoryManager.getShmId(), sharedMemoryManager, Objects.equals(args[2], "stream")?newseed.getContent() : null);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
                     int cov = sharedMemoryManager.getCoverageRate();
