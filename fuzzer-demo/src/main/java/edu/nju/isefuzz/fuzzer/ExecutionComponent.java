@@ -18,9 +18,9 @@ public class ExecutionComponent {
      * @throws IOException          如果进程启动错误
      * @throws InterruptedException 如果执行被中断
      */
-    public ExecutionResult execute(String binaryPath, String input, int shmId, SharedMemoryManager shmManager) throws IOException, InterruptedException {
+    public ExecutionResult execute(String binaryPath,int shmId, SharedMemoryManager shmManager) throws IOException, InterruptedException {
         // 创建进程构建器
-        ProcessBuilder pb = new ProcessBuilder(binaryPath,input);
+        ProcessBuilder pb = new ProcessBuilder(binaryPath.split(" "));
         pb.redirectErrorStream(true); // 将标准错误重定向到标准输出
         pb.environment().put("__AFL_SHM_ID", String.valueOf(shmId)); // 设置共享内存环境变量
 

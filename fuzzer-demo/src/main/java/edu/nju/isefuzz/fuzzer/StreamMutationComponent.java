@@ -27,7 +27,7 @@ public class StreamMutationComponent extends MutationComponent {
     /**
      * HEADER_SIZE: the first part of file stream to be protected from mutation
      */
-    private static final int HEADER_SIZE = 128;
+    private static final int HEADER_SIZE = 0;
 
 
     private static byte[] readFile(String filePath) throws IOException {
