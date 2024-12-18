@@ -88,8 +88,8 @@ public class DemoMutationBlackBoxFuzzer {
                 try {
                     Seed newseed = new Seed(ti, input_by_file);
                     sharedMemoryManager.clearBitmap();
-                    cp.replace("@@",newseed.getContent());
-                    ExecutionResult execRes = execComponent.execute(cp, sharedMemoryManager.getShmId(), sharedMemoryManager);
+                    String input = cp.replace("@@",newseed.getContent());
+                    ExecutionResult execRes = execComponent.execute(input, sharedMemoryManager.getShmId(), sharedMemoryManager);
                     monitorComponent.monitorExecution(execRes, nextSeed, ti, energy);
 
                     int cov = sharedMemoryManager.getCoverageRate();
