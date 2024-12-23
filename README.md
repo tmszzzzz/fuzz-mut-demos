@@ -59,7 +59,7 @@ edu.nju.isefuzz.fuzzer
   - 如果要测试十个指定目标，直接使用如下命令即可：
 
     ```
-    java -cp "fuzzer-demo-1.0.jar:./lib/*" edu.nju.isefuzz.fuzzer.DemoMutationBlackBoxFuzzer "FUZZ_TARGETS/c++filt @@" out string _Z1fv 86400 300
+    java -cp "fuzzer-demo-1.0.jar:./lib/*" edu.nju.isefuzz.fuzzer.DemoMutationBlackBoxFuzzer "FUZZ_TARGETS/c++filt" out stream ./SEEDS/cxxfilt/_Z1fv.txt 86400 300
     
     java -cp "fuzzer-demo-1.0.jar:./lib/*" edu.nju.isefuzz.fuzzer.DemoMutationBlackBoxFuzzer "FUZZ_TARGETS/readelf -a @@" out file ./SEEDS/readelf/small_exec.elf 86400 300
     
