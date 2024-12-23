@@ -111,7 +111,7 @@ public class StreamMutationComponent extends MutationComponent {
         byte[] mutatedData = data.clone();
 
         for (int i = 0; i < numDeletions; i++) {
-            if (mutatedData.length <= HEADER_SIZE + 1) break;
+            if (mutatedData.length <= HEADER_SIZE) break;
             int pos = rand.nextInt(mutatedData.length - HEADER_SIZE) + HEADER_SIZE;
             byte[] newData = new byte[mutatedData.length - 1];
 
@@ -134,7 +134,7 @@ public class StreamMutationComponent extends MutationComponent {
         Random rand = new Random();
         byte[] mutatedData = data.clone();
 
-        if (blockSize > data.length - HEADER_SIZE) return mutatedData;
+        if (blockSize >= data.length - HEADER_SIZE) return mutatedData;
         int pos1 = rand.nextInt(data.length - HEADER_SIZE - blockSize) + HEADER_SIZE;
         int pos2 = rand.nextInt(data.length - HEADER_SIZE - blockSize) + HEADER_SIZE;
 
